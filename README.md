@@ -19,6 +19,28 @@ Fiscal Hub is a modern, progressive web application for generating and visualizi
 
 ---
 
+## Screenshots
+
+All images are real captures of the app; see [`docs/screenshots/README.md`](docs/screenshots/README.md) to regenerate them.
+
+| Upload de XML (light) | Consulta por chave |
+| --- | --- |
+| ![Upload de XML tab in the light theme](docs/screenshots/01-upload-xml-light.png) | ![Access key lookup tab](docs/screenshots/02-consulta-chave.png) |
+
+| Consulta NF-e | Consulta CNPJ |
+| --- | --- |
+| ![Municipal NF-e consultation directory](docs/screenshots/03-consulta-nfe.png) | ![CNPJ lookup tab](docs/screenshots/04-consulta-cnpj.png) |
+
+| Upload de XML (dark) | Login (account) |
+| --- | --- |
+| ![Upload de XML tab in the dark theme](docs/screenshots/05-upload-xml-dark.png) | ![Account login form](docs/screenshots/06-login-account.png) |
+
+| Login (Keycloak) | Mobile layout |
+| --- | --- |
+| ![Keycloak single sign-on gate](docs/screenshots/07-login-keycloak.png) | ![Mobile layout](docs/screenshots/08-mobile.png) |
+
+---
+
 ## Features
 
 ### 📄 DANFE PDF Generation (Offline)
@@ -64,7 +86,7 @@ Three auth modes configurable via environment variable:
 | `keycloak` | OpenID Connect SSO via Keycloak with optional email restriction |
 
 ### 🐳 Docker-Ready
-- **Lightweight Image** — Based on `php:8.3-cli-alpine` (~30 MB compressed).
+- **Lightweight Image** — Based on `php:8.5-fpm-alpine` (slim Alpine base).
 - **Multi-Arch** — Automatic builds for `linux/amd64` and `linux/arm64` via GitHub Actions.
 - **Non-Root** — Container runs as unprivileged `phpuser` (UID 1000).
 - **Reverse Proxy Ready** — Configurable `PORT` and `DOMAIN` environment variables for seamless integration behind Nginx, Traefik, Caddy, or any reverse proxy.
@@ -124,16 +146,22 @@ fiscalhub/
 │   ├── login.html                # Login form page (account mode, reCAPTCHA)
 │   ├── login.php                 # Login handler (validates credentials)
 │   ├── auth-config.php           # Public login config (auth method + site key)
-│   └── logout.php                # Logout handler (destroys session)
+│   ├── logout.php                # Logout handler (destroys session)
+│   ├── keycloak-login.php        # Keycloak Authorization Code + PKCE entry point
+│   └── keycloak-callback.php     # Keycloak callback (code exchange, session)
 ├── docker/
 │   ├── docker-compose.yml        # Single-service container stack
 │   └── .env                      # Configuration template
+├── docs/
+│   └── screenshots/              # README captures, gallery and capture tooling
+├── plans/                        # Dated implementation notes (YYYY-MM-DD-*.md)
 ├── .github/
 │   └── workflows/
-│       ├── release_build.yml     # Build, tag, release + multi-arch Docker push
+│       ├── build.yml             # Build, tag, release + multi-arch Docker push
 │       ├── keepalive.yml         # Weekly keepalive commit
-│       └── update_readme.yml     # Daily README badge/footer sync
-├── Dockerfile                    # PHP 8.3-cli-alpine image
+│       ├── semantic-release.yml  # Version, tag and GitHub Release
+│       └── update-readme.yml     # Daily README badge/footer sync
+├── Dockerfile                    # PHP 8.5 FPM + nginx image
 ├── .dockerignore                 # Exclude secrets and dev files from image
 ├── LICENSE                       # MIT License
 └── README.md                     # This file
@@ -345,7 +373,7 @@ server {
 
 | Component | Technology |
 |-----------|-----------|
-| Runtime | PHP 8.3 (CLI, Alpine) |
+| Runtime | PHP 8.5 (FPM, Alpine) |
 | Frontend | Vanilla HTML5, CSS3, JavaScript (ES6+) |
 | PDF Generation | pdfmake 0.2.10 |
 | Barcode Scanner | Quagga2 1.8.3 |

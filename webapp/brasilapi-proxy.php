@@ -93,7 +93,6 @@ $response    = curl_exec($ch);
 $httpCode    = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 $error       = curl_error($ch);
-curl_close($ch);
 
 // ── Handle cURL failure ──────────────────────────────────
 if ($error) {

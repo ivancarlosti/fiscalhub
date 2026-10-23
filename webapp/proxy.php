@@ -104,7 +104,6 @@ $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 $error = curl_error($ch);
-curl_close($ch);
 
 // ── Handle cURL failure ──────────────────────────────────
 if ($error) {
@@ -133,7 +132,6 @@ if ($httpCode === 404 || $httpCode === 422) {
     $addResponse = curl_exec($ch2);
     $addHttpCode = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
     $addError = curl_error($ch2);
-    curl_close($ch2);
 
     if ($addError) {
         http_response_code(502);
@@ -180,7 +178,6 @@ if ($httpCode === 404 || $httpCode === 422) {
             $httpCode = curl_getinfo($ch3, CURLINFO_HTTP_CODE);
             $contentType = curl_getinfo($ch3, CURLINFO_CONTENT_TYPE);
             $pollError = curl_error($ch3);
-            curl_close($ch3);
 
             if ($pollError) {
                 http_response_code(502);

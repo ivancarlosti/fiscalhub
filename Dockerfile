@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.5-fpm-alpine
 
 # Install nginx (Alpine package)
 RUN apk add --no-cache nginx

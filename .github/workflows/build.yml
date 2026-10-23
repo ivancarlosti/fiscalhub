@@ -45,7 +45,8 @@ jobs:
         run: |
           zip -r "${{ steps.version.outputs.zip_name }}" . \
             -x ".git/*" ".github/*" "docker/*" ".dockerignore" \
-               "CNAME" "Dockerfile" "README.md" "LICENSE"
+               "CNAME" "Dockerfile" "README.md" "LICENSE" \
+               "docs/*" "plans/*"
 
       - name: 📤 Upload ZIP to GitHub Release
         env:

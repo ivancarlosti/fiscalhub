@@ -1241,9 +1241,15 @@
         }
 
         @media (max-width: 525px) {
-            .header { padding: 0 12px; }
+            .header { padding: 0 12px; gap: 8px; }
             .header__title { font-size: 1.05rem; }
             .header__subtitle { display: none; }
+            /* Keep theme, logout and the three flags inside a 390px viewport. */
+            .header__controls { gap: 4px; }
+            .theme-toggle,
+            .header__logout { width: 34px; height: 34px; }
+            .lang-flags { gap: 4px; }
+            .lang-flag { width: 24px; height: 17px; }
             .card__title { font-size: 0.95rem; }
             .drop-zone { padding: 32px 16px; }
             .drop-zone__icon { font-size: 2.5rem; }

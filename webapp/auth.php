@@ -261,7 +261,6 @@ function auth_verify_recaptcha(string $token): bool {
     $response  = curl_exec($ch);
     $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-    curl_close($ch);
 
     if ($response === false || $httpCode !== 200) {
         error_log('reCAPTCHA verification failed: '
@@ -467,7 +466,6 @@ function auth_keycloak_post(string $url, array $fields): ?array {
     $response  = curl_exec($ch);
     $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-    curl_close($ch);
 
     if ($response === false || $httpCode !== 200) {
         error_log('Keycloak request failed: ' . ($curlError !== '' ? $curlError : 'HTTP ' . $httpCode));
@@ -494,7 +492,6 @@ function auth_keycloak_userinfo(string $accessToken): ?array {
     ]);
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($response === false || $httpCode !== 200 || $response === '') {
         return null;
