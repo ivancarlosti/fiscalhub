@@ -8,7 +8,8 @@ Dockerfile
 .dockerignore
 docker-compose.yml
 
-# Secrets — NEVER bake .env into the image
+# Secrets — NEVER bake .env into the image. Only the placeholder-only template
+# (docker/.env.example) is committed; the real .env stays on the host.
 .env
 *.env
 

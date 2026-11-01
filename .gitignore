@@ -1,0 +1,5 @@
+# Local environment files — copy the committed template instead:
+#     docker/.env.example -> docker/.env
+.env
+*.env
+!.env.example

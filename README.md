@@ -151,7 +151,8 @@ fiscalhub/
 │   └── keycloak-callback.php     # Keycloak callback (code exchange, session)
 ├── docker/
 │   ├── docker-compose.yml        # Single-service container stack
-│   └── .env                      # Configuration template
+│   ├── .env.example              # Configuration template (committed)
+│   └── .env                      # Your local config (gitignored)
 ├── docs/
 │   └── screenshots/              # README captures, gallery and capture tooling
 ├── plans/                        # Dated implementation notes (YYYY-MM-DD-*.md)
@@ -163,6 +164,7 @@ fiscalhub/
 │       └── update-readme.yml     # Daily README badge/footer sync
 ├── Dockerfile                    # PHP 8.5 FPM + nginx image
 ├── .dockerignore                 # Exclude secrets and dev files from image
+├── .gitignore                    # Keep local .env and other artifacts out of git
 ├── LICENSE                       # MIT License
 └── README.md                     # This file
 ```
@@ -177,12 +179,15 @@ fiscalhub/
 
 ### 1. Configure Environment
 
-Navigate into the `docker` directory and edit the `.env` file with your settings:
+The repository only ships a template, `docker/.env.example`. Copy it to `docker/.env` and edit your settings:
 
 ```bash
 cd docker
+cp .env.example .env
 nano .env
 ```
+
+> `docker/.env` holds your deployment secrets (API keys, passwords). It is gitignored and excluded from the Docker image, so never commit it — keep your values in `.env` and leave `.env.example` untouched.
 
 **Minimum settings (offline-only, no API, no auth):**
 ```env
@@ -241,7 +246,7 @@ The default tab is "Upload XML" — drop an NFe XML file to instantly generate a
 | `FISCALHUB_API_KEY` | No* | — | Your Meu Danfe API key (*required for online lookups) |
 | `FISCALHUB_API_TIMEOUT` | No | `60` | Seconds before timing out SEFAZ queries |
 
-> The former `MEUDANFE_API_*` variables are still read as a fallback, so an existing `docker/.env` keeps working; `FISCALHUB_API_*` is the documented name.
+> The former `MEUDANFE_API_*` variables are still read as a fallback, so an existing `docker/.env` (created from the template) keeps working; `FISCALHUB_API_*` is the documented name.
 
 ### BrasilAPI
 
@@ -342,7 +347,7 @@ Sessions are bound to the auth method that created them, so switching `AUTH_METH
 
 Fiscal Hub works seamlessly behind Nginx, Traefik, Caddy, or any reverse proxy:
 
-1. Set `PORT` in `.env` to your desired host port (container internally uses `8080`).
+1. Set `PORT` in `docker/.env` to your desired host port (container internally uses `8080`).
 2. Point your reverse proxy upstream to `localhost:<PORT>`.
 3. Optionally set `DOMAIN` for proxy configuration references.
 
@@ -387,9 +392,13 @@ server {
 
 ## Troubleshooting
 
+**`docker compose` fails with "env file .../.env not found":**
+- The local config has not been created yet. Run `cp .env.example .env` inside the `docker` directory and start the stack again.
+- Never commit the resulting `.env` — it is gitignored on purpose.
+
 **Online lookup fails with "Server configuration error":**
 - Ensure `FISCALHUB_API_KEY` is set in `docker/.env` and is a valid Meu Danfe API key.
-- Restart the container after changing `.env`: `docker compose restart`
+- Restart the container after changing `docker/.env`: `docker compose restart`
 
 **CNPJ lookup fails:**
 - BrasilAPI requires no API key. Check your outbound internet access and DNS resolution from the container.
@@ -410,12 +419,12 @@ server {
 - For HTTPS sites, camera access requires a secure context. If testing locally on `localhost`, this is not an issue.
 
 **Port conflict:**
-- Change `PORT` in `.env` to an available port (e.g., `8081`).
+- Change `PORT` in `docker/.env` to an available port (e.g., `8081`).
 
 **Authentication not working:**
 - Ensure `AUTH_METHOD=account` and both `ACCOUNT_LOGIN` and `ACCOUNT_PASSWORD` are set in `docker/.env`.
 - If the login page redirects back to itself, check that your browser accepts cookies from the site.
-- Restart the container after changing `.env`: `docker compose restart`
+- Restart the container after changing `docker/.env`: `docker compose restart`
 - reCAPTCHA: a "Falha na verificação de segurança" message means the token was missing or Google rejected it. Confirm `RECAPTCHA_SITE_KEY`/`RECAPTCHA_SECRET_KEY` are a matching **v2 checkbox** key pair and that the container can reach `www.google.com` — verification fails closed on network errors.
 - Keycloak mode hides the username/password form by design: use the *Entrar com Keycloak* button, which starts the provider flow. If it reports an incomplete configuration, set `KEYCLOAK_CLIENT_ID`/`KEYCLOAK_CLIENT_SECRET` and register `https://<host>/keycloak-callback.php` (or `KEYCLOAK_CALLBACK_URI`) as a valid redirect URI on the client. If the provider answers *Invalid redirect uri* after a logout, register `KEYCLOAK_REDIRECT_URI` under *Valid post logout redirect URIs*. Old sessions from `account` mode are revoked automatically when `AUTH_METHOD` changes; clear cookies if a browser still holds a stale session.
 - For Keycloak auth behind a reverse proxy: Nginx strips the `Authorization` header by default. Add `proxy_set_header Authorization $http_authorization;` to your Nginx config.
@@ -425,7 +434,8 @@ server {
 ## Security
 
 - **API keys are never stored in source code.** They are read from environment variables at runtime via `getenv()`.
-- **The `.env` file is excluded from Docker images** via `.dockerignore`. It is only mounted at container runtime.
+- **Your `docker/.env` never leaves the machine.** It is gitignored and excluded from Docker images via `.dockerignore`; only the placeholder-only `docker/.env.example` template is committed.
+- **The committed template contains no secrets** — every credential in `.env.example` is a placeholder you replace in your local copy.
 - **Error responses never expose internal configuration**, API keys, file paths, or stack traces.
 - **The container runs as a non-root user** (`phpuser`, UID 1000).
 - **Only the `webapp/` directory is copied into the image.** Docker, GitHub, and development files are excluded.
