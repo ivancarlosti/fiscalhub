@@ -7,7 +7,9 @@
     <meta name="description" content="Fiscal Hub — Visualização e geração de documentos fiscais, consulta de CNPJ/CPF e chaves de acesso 100% no navegador">
     <title>Fiscal Hub</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g"
+          crossorigin="anonymous">
 
     <link rel="stylesheet" href="styles.css">
 
@@ -440,10 +442,20 @@ HEADER
 
     <!-- ============================================================
     EXTERNAL SCRIPTS (CDN)
+    Every CDN resource is pinned by version AND by SRI hash: a tampered or
+    swapped file is refused by the browser instead of executed. Bumping a
+    version means recomputing its integrity attribute
+    (`curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`).
     ============================================================ -->
-    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.3/dist/quagga.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.3/dist/quagga.min.js"
+            integrity="sha384-i03FhjBudgoiI9QHNKl5k6Kg5sC/s+r0+4ZZMWpPJNipj9Xp3VzBi5ha7f6B3DIc"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js"
+            integrity="sha384-vseuUuO/VRMn00lXYd5m/Pk4l/7RjMqhXGf6G0RALy+On0txYb39dQsUQDAd7q5L"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js"
+            integrity="sha384-nXUiXap6sIVQQCtbYdJPsTOTJwv3rZjOdv8Ckh+3udRCVp3YLpdgHnjpPHD/LaC0"
+            crossorigin="anonymous"></script>
 
     <script src="app.js"></script>
 
